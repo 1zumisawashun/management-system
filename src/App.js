@@ -5,27 +5,31 @@ import Create from "./pages/create/Create";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Project from "./pages/project/Project";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <Sidebar />
         <div className="container">
+          <Navbar />
           <Switch>
-            <Route>
-              <Dashboard exact path="/" />
+            <Route exact path="/">
+              <Dashboard />
             </Route>
-            <Route>
-              <Create path="/create" />
+            <Route path="/create">
+              <Create />
             </Route>
-            <Route>
-              <Login path="/login" />
+            <Route path="/login">
+              <Login />
             </Route>
-            <Route>
-              <Signup path="/signup" />
+            <Route path="/signup">
+              <Signup />
             </Route>
-            <Route>
-              <Project path="/projects/:id" />
+            <Route path="/projects/:id">
+              <Project />
             </Route>
           </Switch>
         </div>
