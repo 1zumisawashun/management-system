@@ -1,7 +1,37 @@
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Create from "./pages/create/Create";
+import Login from "./pages/login/Login";
+import Signup from "./pages/signup/Signup";
+import Project from "./pages/project/Project";
 
 function App() {
-  return <div className="App"></div>;
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <div className="container">
+          <Switch>
+            <Route>
+              <Dashboard exact path="/" />
+            </Route>
+            <Route>
+              <Create path="/create" />
+            </Route>
+            <Route>
+              <Login path="/login" />
+            </Route>
+            <Route>
+              <Signup path="/signup" />
+            </Route>
+            <Route>
+              <Project path="/projects/:id" />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;
