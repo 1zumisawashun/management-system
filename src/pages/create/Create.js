@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Create.css";
 import Select from "react-select";
+import { useCollection } from "../../hooks/useCollection";
+import { timestamp } from "../../firebase/config";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const categories = [
   { value: "development", label: "Development" },
@@ -10,15 +13,67 @@ const categories = [
 ];
 
 export default function Create() {
+  // convert [{...},{...}] and add props "value","label" to use Select component
+  const { documents } = useCollection("users");
+  const [users, setUsers] = useState([]);
+  const { user } = useAuthContext();
+  console.log(documents);
+
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
-  // const [assignedUsers, setAssignedUser] = useState([]);
+  const [assignedUsers, setAssignedUser] = useState([]);
+  const [formError, setFromError] = useState(null);
+
+  useEffect(() => {
+    if (documents) {
+      const options = documents.map((user) => {
+        return {
+          value: user,
+          label: user.displayName,
+        };
+      });
+      setUsers(options);
+    }
+  }, [documents]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(name, details, dueDate, category.value);
+    setFromError(null);
+    if (!category) {
+      setFromError("Please select aa project category");
+      return;
+    }
+    if (assignedUsers.length < 1) {
+      setFromError("Please assign the project to at least 1 user");
+    }
+
+    const createdBy = {
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      id: user.uid,
+    };
+
+    const assignedUsersList = assignedUsers.map((u) => {
+      return {
+        displayName: u.value.displayName,
+        photoURL: u.value.photoURL,
+        id: u.value.id,
+      };
+    });
+
+    const project = {
+      name,
+      details,
+      category: category.value,
+      dueDate: timestamp.fromDate(new Date(dueDate)),
+      comment: [],
+      createdBy,
+      assignedUsersList,
+    };
+
+    console.log(project);
   };
   return (
     <div className="create-form">
@@ -54,16 +109,21 @@ export default function Create() {
         <label>
           <span>Project category:</span>
           <Select
+            required
             onChange={(option) => setCategory(option)}
             options={categories}
           />
-          {/* category select here */}
         </label>
         <label>
           <span>Assign to:</span>
-          {/* assign select here */}
+          <Select
+            onChange={(option) => setAssignedUser(option)}
+            options={users}
+            isMulti
+          />
         </label>
         <button className="btn">Add Project</button>
+        {formError && <p className="error">{formError}</p>}
       </form>
     </div>
   );
