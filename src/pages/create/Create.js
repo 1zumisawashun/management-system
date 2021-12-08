@@ -4,6 +4,8 @@ import Select from "react-select";
 import { useCollection } from "../../hooks/useCollection";
 import { timestamp } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useFirestore } from "../../hooks/useFirestore";
+import { useHistory } from "react-router-dom";
 
 const categories = [
   { value: "development", label: "Development" },
@@ -13,11 +15,12 @@ const categories = [
 ];
 
 export default function Create() {
+  const history = useHistory();
+  const { addDocument, response } = useFirestore("projects");
   // convert [{...},{...}] and add props "value","label" to use Select component
   const { documents } = useCollection("users");
   const [users, setUsers] = useState([]);
   const { user } = useAuthContext();
-  console.log(documents);
 
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
@@ -38,7 +41,7 @@ export default function Create() {
     }
   }, [documents]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFromError(null);
     if (!category) {
@@ -73,7 +76,10 @@ export default function Create() {
       assignedUsersList,
     };
 
-    console.log(project);
+    await addDocument(project);
+    if (!response.error) {
+      history.push("/");
+    }
   };
   return (
     <div className="create-form">
