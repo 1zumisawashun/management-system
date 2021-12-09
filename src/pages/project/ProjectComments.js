@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { timestamp } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useFirestore } from "../../hooks/useFirestore";
 
-export default function ProjectComments() {
+export default function ProjectComments({ project }) {
+  const { updateDocument, response } = useFirestore("projects");
   const [newComment, setNewComment] = useState("");
   const { user } = useAuthContext();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const commentToAdd = {
       displayName: user.displayName,
@@ -16,6 +18,14 @@ export default function ProjectComments() {
       // FIXME:被る可能性があるのでuuidに変更する
     };
     console.log(commentToAdd);
+    console.log(project.comments);
+    await updateDocument(project.id, {
+      // スプレッド構文を使ってcommentArrayに追加で上書きする
+      comments: [...project.comments, commentToAdd],
+    });
+    if (!response.error) {
+      setNewComment("");
+    }
   };
   return (
     <div className="project-comments">
