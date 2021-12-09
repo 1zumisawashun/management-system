@@ -4,9 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ```
 frontend: React, TypeScript
-Backend: Firebase(Firestore, Authentication, Storage, Hosting)
+Backend: Firebase (Firestore, Authentication, Storage, Hosting)
 Others: Stripe
-
 ```
 
 ## Available Scripts
@@ -25,7 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-## `Necessary deploy commands`
+## Necessary deploy commands
 
 Before deploy, you can run:
 
